@@ -27,7 +27,7 @@ public class User implements Serializable {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 25)
-    private Role role;
+    private Role role = Role.ROLE_USER;
 
     private LocalDateTime creationDate;
     private LocalDateTime modifyDate;
@@ -35,7 +35,7 @@ public class User implements Serializable {
     private String modifiedBy;
 
     public enum Role{
-        USER, ADMIN
+        ROLE_USER, ROLE_ADMIN
     }
 
     @Override
