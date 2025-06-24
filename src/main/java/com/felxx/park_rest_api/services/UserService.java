@@ -3,10 +3,12 @@ package com.felxx.park_rest_api.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.felxx.park_rest_api.entities.User;
+import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
 import com.felxx.park_rest_api.repositories.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,11 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new UsernameUniqueViolationException("Username already exists: " + user.getUsername());
+        }
     }
 
     @Transactional(readOnly = true)
