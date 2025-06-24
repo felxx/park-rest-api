@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
 import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorMessage> EntityNotFoundException(EntityNotFoundException exception, HttpServletRequest request, BindingResult bindingResult) {
+        log.error("Api Error - ", exception);
+        ErrorMessage errorMessage = new ErrorMessage(request, HttpStatus.NOT_FOUND, exception.getMessage(), bindingResult);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+
+    }
 
     @ExceptionHandler(UsernameUniqueViolationException.class)
     public ResponseEntity<ErrorMessage> UsernameUniqueViolationException(UsernameUniqueViolationException exception, HttpServletRequest request, BindingResult bindingResult) {

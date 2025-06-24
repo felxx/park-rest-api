@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.felxx.park_rest_api.entities.User;
+import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
 import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
 import com.felxx.park_rest_api.repositories.UserRepository;
 
@@ -31,7 +32,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
     }
 
     @Transactional
