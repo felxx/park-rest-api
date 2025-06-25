@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.felxx.park_rest_api.entities.User;
 import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
+import com.felxx.park_rest_api.exceptions.PasswordInvalidException;
 import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
 import com.felxx.park_rest_api.repositories.UserRepository;
 
@@ -25,24 +26,27 @@ public class UserService {
     public User save(User user) {
         try {
             return userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new UsernameUniqueViolationException("Username already exists: " + user.getUsername());
+        } catch (DataIntegrityViolationException ex) {
+            throw new UsernameUniqueViolationException(String.format("Username '%s' already registered", user.getUsername()));
         }
     }
 
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return userRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException(String.format("User id=%s not found", id))
+        );
     }
 
     @Transactional
     public User changePassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
-        if (!newPassword.equals(confirmPassword)){
-            throw new RuntimeException("New password and confirm password do not match");
+         if (!newPassword.equals(confirmPassword)) {
+            throw new PasswordInvalidException("New password does not match password confirmation.");
         }
+
         User user = findById(id);
-        if(user.getPassword().equals(currentPassword)) {
-            throw new RuntimeException("Current password is incorrect");
+        if(!user.getPassword().equals(currentPassword)) {
+            throw new PasswordInvalidException("Current password does not match.");
         }
         user.setPassword(newPassword);
         return user;

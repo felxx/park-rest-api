@@ -10,9 +10,9 @@ import io.swagger.v3.oas.models.info.License;
 
 @Configuration
 public class SpringDocOpenApiConfig {
-    
+
     @Bean
-    public OpenAPI openAPI(){
+    OpenAPI openAPI(){
         return new OpenAPI()
                 .info(new Info()
                         .title("Park REST API")

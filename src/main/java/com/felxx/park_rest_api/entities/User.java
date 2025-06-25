@@ -12,7 +12,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,7 +26,7 @@ public class User implements Serializable {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 25)
-    private Role role = Role.ROLE_USER;
+    private Role role = Role.ROLE_CLIENT;
 
     private LocalDateTime creationDate;
     private LocalDateTime modifyDate;
@@ -35,7 +34,7 @@ public class User implements Serializable {
     private String modifiedBy;
 
     public enum Role{
-        ROLE_USER, ROLE_ADMIN
+        ROLE_CLIENT, ROLE_ADMIN
     }
 
     @Override

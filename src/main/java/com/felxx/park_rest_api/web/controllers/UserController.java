@@ -69,7 +69,8 @@ public class UserController {
     @Operation(summary = "Change a user password", responses = {
         @ApiResponse(responseCode = "204", description = "Password changed", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
         @ApiResponse(responseCode = "400", description = "Invalid password", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
-        @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+        @ApiResponse(responseCode = "422", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
         })
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordDto userPasswordDto) {

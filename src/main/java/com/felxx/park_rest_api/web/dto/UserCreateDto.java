@@ -12,7 +12,8 @@ import lombok.ToString;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class UserCreateDto {
     
-    @Email(message = "Invalid email format") @NotBlank(message = "Email cannot be blank") 
+    @Email(message = "Invalid email format", regexp = "^[a-z0-9.+-]+@[a-z0-9.-]+\\.[a-z]{2,}$") 
+    @NotBlank(message = "Email cannot be blank")
     private String username;
     
     @NotBlank(message = "Password cannot be blank")
