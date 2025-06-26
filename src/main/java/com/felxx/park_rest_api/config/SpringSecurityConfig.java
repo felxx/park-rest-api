@@ -22,7 +22,15 @@ import org.springframework.http.HttpMethod;
 @EnableMethodSecurity
 @EnableWebMvc
 public class SpringSecurityConfig {
-    
+
+    private static final String[] DOCUMENTATION_OPENAPI = {
+            "/docs/index.html",
+            "/docs-park.html", "/docs-park/**",
+            "/v3/api-docs/**",
+            "/swagger-ui-custom.html", "/swagger-ui.html", "/swagger-ui/**",
+            "/**.html", "/webjars/**", "/configuration/**", "/swagger-resources/**"
+    };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -30,12 +38,12 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll(); // Ensure this line exists and is correct
+                    auth.requestMatchers(HttpMethod.POST, "/api/v1/auth").permitAll();
+                    auth.requestMatchers(DOCUMENTATION_OPENAPI).permitAll(); // Ensure this line exists and is correct
                     auth.anyRequest().authenticated();
                 }).addFilterBefore(
-                    jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class
-                ).exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-                )
+                        jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
                 .build();
     }
 
@@ -50,7 +58,8 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
