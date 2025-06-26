@@ -31,7 +31,8 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<ErrorMessage> entityNotFoundException(AccessDeniedException ex, HttpServletRequest request) {
+    public final ResponseEntity<ErrorMessage> entityNotFoundException(AccessDeniedException ex,
+            HttpServletRequest request) {
         log.error("API Error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
@@ -47,11 +48,13 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()));
     }
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMessage> methodArgumentNotValidException(MethodArgumentNotValidException exception, HttpServletRequest request, BindingResult bindingResult) {
+    public ResponseEntity<ErrorMessage> methodArgumentNotValidException(MethodArgumentNotValidException exception,
+            HttpServletRequest request, BindingResult bindingResult) {
         log.error("Api Error - ", exception);
-        ErrorMessage errorMessage = new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Invalid field(s)", bindingResult);
+        ErrorMessage errorMessage = new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Invalid field(s)",
+                bindingResult);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorMessage);
     }
 

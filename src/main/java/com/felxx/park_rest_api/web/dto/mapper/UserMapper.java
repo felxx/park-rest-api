@@ -11,7 +11,7 @@ import com.felxx.park_rest_api.web.dto.UserCreateDto;
 import com.felxx.park_rest_api.web.dto.UserResponseDto;
 
 public class UserMapper {
-    
+
     public static User toUser(UserCreateDto userCreateDto) {
         return new ModelMapper().map(userCreateDto, User.class);
     }
@@ -24,7 +24,7 @@ public class UserMapper {
                 map().setRole(role);
             }
         };
-        ModelMapper mapper =  new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
         mapper.addMappings(propertyMap);
         return mapper.map(user, UserResponseDto.class);
     }

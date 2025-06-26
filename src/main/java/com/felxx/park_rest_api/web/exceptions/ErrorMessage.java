@@ -13,9 +13,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter @ToString
+@Getter
+@ToString
 public class ErrorMessage {
-    
+
     private String path;
     private String method;
     private int status;
@@ -46,7 +47,7 @@ public class ErrorMessage {
 
     private void addErrors(BindingResult bindingResult) {
         this.errors = new HashMap<>();
-        for(FieldError fieldError : bindingResult.getFieldErrors()) {
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
             this.errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
     }

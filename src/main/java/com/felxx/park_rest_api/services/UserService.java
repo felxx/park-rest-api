@@ -18,9 +18,9 @@ import com.felxx.park_rest_api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Service 
+@Service
 public class UserService {
-    
+
     @Autowired
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -31,25 +31,25 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
-            throw new UsernameUniqueViolationException(String.format("Username '%s' already registered", user.getUsername()));
+            throw new UsernameUniqueViolationException(
+                    String.format("Username '%s' already registered", user.getUsername()));
         }
     }
 
     @Transactional(readOnly = true)
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException(String.format("User id=%s not found", id))
-        );
+                () -> new EntityNotFoundException(String.format("User id=%s not found", id)));
     }
 
     @Transactional
     public User changePassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
-         if (!newPassword.equals(confirmPassword)) {
+        if (!newPassword.equals(confirmPassword)) {
             throw new PasswordInvalidException("New password does not match password confirmation.");
         }
 
         User user = findById(id);
-        if(!passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new PasswordInvalidException("Current password does not match.");
         }
         user.setPassword(newPassword);
@@ -64,8 +64,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
-            () -> new EntityNotFoundException(String.format("User with username '%s' not found", username))
-        );
+                () -> new EntityNotFoundException(String.format("User with username '%s' not found", username)));
     }
 
     public Role findRoleByUsername(String username) {

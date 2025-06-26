@@ -27,19 +27,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    
+
     private final JwtUserDetailsService jwtUserDetailsService;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping
     public ResponseEntity<?> authenticate(@RequestBody @Valid UserLoginDto userLoginDto, HttpServletRequest request) {
         log.info("Authenticating user: {}", userLoginDto.getUsername());
-        try{
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword());
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    userLoginDto.getUsername(), userLoginDto.getPassword());
             authenticationManager.authenticate(authenticationToken);
             JwtToken jwtToken = jwtUserDetailsService.getTokenAuthenticated(userLoginDto.getUsername());
             return ResponseEntity.ok().body(jwtToken);
-        } catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             log.warn("Bad credentials for username: {}", userLoginDto.getUsername());
         }
         return ResponseEntity

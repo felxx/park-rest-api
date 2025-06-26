@@ -14,7 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
@@ -30,7 +32,7 @@ public class User implements Serializable {
 
     @Column(nullable = false, length = 200)
     private String password;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 25)
     private Role role = Role.ROLE_CLIENT;
@@ -44,7 +46,7 @@ public class User implements Serializable {
     @LastModifiedBy
     private String modifiedBy;
 
-    public enum Role{
+    public enum Role {
         ROLE_CLIENT, ROLE_ADMIN
     }
 

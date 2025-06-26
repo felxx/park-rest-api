@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.felxx.park_rest_api.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+
     Optional<User> findByUsername(String username);
 
     @Query("SELECT u.role FROM User u WHERE u.username like :username")
