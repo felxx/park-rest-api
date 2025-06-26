@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,17 +40,20 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDto>> findAll() {
         List<User> users = userService.findAll();
         return ResponseEntity.ok().body(UserMapper.toListDto(users));
     }
 
 
-    @Operation(summary = "Retrieve a user by his id", responses = {
-        @ApiResponse(responseCode = "200", description = "User succesfully found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-        @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
-        })
+    @Operation(summary = "Retrieve a user by his id",
+            responses = {
+                @ApiResponse(responseCode = "200", description = "User succesfully found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
+                @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            })
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') OR (hasRole('CLIENT') AND #id == authentication.principal.id)")
     public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
         User user = userService.findById(id);
         return ResponseEntity.ok().body(UserMapper.toDto(user));
@@ -73,6 +77,7 @@ public class UserController {
         @ApiResponse(responseCode = "422", description = "Invalid input", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
         })
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT') AND #id == authentication.principal.id")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordDto userPasswordDto) {
         userService.changePassword(id, userPasswordDto.getCurrentPassword(), userPasswordDto.getNewPassword(), userPasswordDto.getConfirmPassword());
         return ResponseEntity.noContent().build();

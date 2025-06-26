@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.felxx.park_rest_api.entities.User;
+import com.felxx.park_rest_api.entities.User.Role;
 import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
 import com.felxx.park_rest_api.exceptions.PasswordInvalidException;
 import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
@@ -21,10 +23,12 @@ public class UserService {
     
     @Autowired
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public User save(User user) {
         try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } catch (DataIntegrityViolationException ex) {
             throw new UsernameUniqueViolationException(String.format("Username '%s' already registered", user.getUsername()));
@@ -45,7 +49,7 @@ public class UserService {
         }
 
         User user = findById(id);
-        if(!user.getPassword().equals(currentPassword)) {
+        if(!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new PasswordInvalidException("Current password does not match.");
         }
         user.setPassword(newPassword);
@@ -55,5 +59,16 @@ public class UserService {
     public List<User> findAll() {
         List<User> users = userRepository.findAll();
         return users;
+    }
+
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(
+            () -> new EntityNotFoundException(String.format("User with username '%s' not found", username))
+        );
+    }
+
+    public Role findRoleByUsername(String username) {
+        return userRepository.findRoleByUsername(username);
     }
 }
