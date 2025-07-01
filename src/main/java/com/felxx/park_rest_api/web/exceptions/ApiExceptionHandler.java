@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.felxx.park_rest_api.exceptions.CpfUniqueViolationException;
 import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
 import com.felxx.park_rest_api.exceptions.PasswordInvalidException;
+import com.felxx.park_rest_api.exceptions.UniqueCodeViolationException;
 import com.felxx.park_rest_api.exceptions.UsernameUniqueViolationException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.FORBIDDEN, ex.getMessage()));
     }
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class, UniqueCodeViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
         return ResponseEntity
