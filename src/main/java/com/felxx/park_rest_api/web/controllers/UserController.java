@@ -55,7 +55,7 @@ public class UserController {
         @Operation(summary = "Retrieve a user by his id", security = @SecurityRequirement(name = "security"), responses = {
                         @ApiResponse(responseCode = "200", description = "User succesfully found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
                         @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
-                        @ApiResponse(responseCode = "403", description = "User don't have permission to acess this resource", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                        @ApiResponse(responseCode = "403", description = "User don't have permission to access this resource", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
         })
         @GetMapping("/{id}")
         @PreAuthorize("hasRole('ADMIN') OR (hasRole('CLIENT') AND #id == authentication.principal.id)")
