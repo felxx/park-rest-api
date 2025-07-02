@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 
 import com.felxx.park_rest_api.entities.ParkingSpace;
 import com.felxx.park_rest_api.web.dto.ParkingSpaceCreateDto;
+import com.felxx.park_rest_api.web.dto.ParkingSpaceResponseDto;
 
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ public class ParkingSpaceMapper {
         return new ModelMapper().map(dto, ParkingSpace.class);
     }
 
-    public static ParkingSpaceCreateDto toParkingSpaceCreateDto(ParkingSpace parkingSpace) {
-        return new ModelMapper().map(parkingSpace, ParkingSpaceCreateDto.class);
+    public static ParkingSpaceResponseDto toDto(ParkingSpace parkingSpace) {
+        return new ModelMapper().map(parkingSpace, ParkingSpaceResponseDto.class);
     }
 }
