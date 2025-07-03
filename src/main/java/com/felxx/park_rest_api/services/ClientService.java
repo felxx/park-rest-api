@@ -43,4 +43,8 @@ public class ClientService {
     public Client findByUserId(Long userId) {
         return clientRepository.findByUserId(userId);
     }
+
+    public Client findByCpf(String cpf) {
+        return clientRepository.findByCpf(cpf).orElseThrow(() -> new EntityNotFoundException(String.format("Client with CPF %s not found", cpf)));
+    }
 }

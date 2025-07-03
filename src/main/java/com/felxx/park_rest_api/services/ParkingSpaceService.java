@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.felxx.park_rest_api.entities.ParkingSpace;
+import com.felxx.park_rest_api.entities.ParkingSpace.ParkingSpaceStatus;
 import com.felxx.park_rest_api.exceptions.EntityNotFoundException;
 import com.felxx.park_rest_api.exceptions.UniqueCodeViolationException;
 import com.felxx.park_rest_api.repositories.ParkingSpaceRepository;
@@ -29,5 +30,10 @@ public class ParkingSpaceService {
     @Transactional(readOnly = true)
     public ParkingSpace findByCode(String code) {
         return parkingSpaceRepository.findByCode(code).orElseThrow(() -> new EntityNotFoundException("Parking space not found with code: " + code));
+    }
+
+    @Transactional(readOnly = true)
+    public ParkingSpace findByAvailableParkingSpace() {
+        return parkingSpaceRepository.findFirstByStatus(ParkingSpaceStatus.AVAILABLE).orElseThrow(() -> new EntityNotFoundException("No available parking spaces found."));
     }
 }
