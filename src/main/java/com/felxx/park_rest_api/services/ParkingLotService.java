@@ -1,5 +1,6 @@
 package com.felxx.park_rest_api.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -33,5 +34,25 @@ public class ParkingLotService {
         clientParkingSpace.setReceipt(ParkingLotUtils.generateReceipt());
         return clientParkingSpaceService.save(clientParkingSpace);
 
+    }
+
+    @Transactional
+    public ClientParkingSpace checkOut(String receipt) {
+        ClientParkingSpace clientParkingSpace = clientParkingSpaceService.findByReceipt(receipt);
+
+        LocalDateTime exitDate = LocalDateTime.now();
+
+        BigDecimal price = ParkingLotUtils.calculatePrice(clientParkingSpace.getEntryDate(), exitDate);
+        clientParkingSpace.setPrice(price);
+
+        long numberOfTimes = clientParkingSpaceService.getNumberOfTimesParkingLotCompleted(clientParkingSpace.getClient().getCpf());
+
+        BigDecimal discount = ParkingLotUtils.calculateDiscount(price, numberOfTimes);
+        clientParkingSpace.setDiscount(discount);
+
+        clientParkingSpace.setExitDate(exitDate);
+        clientParkingSpace.getParkingSpace().setStatus(ParkingSpace.ParkingSpaceStatus.AVAILABLE);
+
+        return clientParkingSpaceService.save(clientParkingSpace);
     }
 }
