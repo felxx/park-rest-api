@@ -1,9 +1,9 @@
 insert into users (id, username, password, role)
-    values (100, 'ana@email.com.br', '$2a$10$AtWo422MdyRQ1RgPzmJNnuDB7xN0GW38sXT4rnBFBqGnMyVmVEf4O', 'ROLE_ADMIN');
+    values (100, 'ana@email.com.br', '$2a$12$e6ueYpLCQCT9j7MXTVLfc.R.kWUi.UXkf26rRbAfLmxq9dqNkhQ3C', 'ROLE_ADMIN');
 insert into users (id, username, password, role)
-    values (101, 'bia@email.com.br', '$2a$10$AtWo422MdyRQ1RgPzmJNnuDB7xN0GW38sXT4rnBFBqGnMyVmVEf4O', 'ROLE_CLIENT');
+    values (101, 'bia@email.com.br', '$2a$12$e6ueYpLCQCT9j7MXTVLfc.R.kWUi.UXkf26rRbAfLmxq9dqNkhQ3C', 'ROLE_CLIENT');
 insert into users (id, username, password, role)
-    values (102, 'bob@email.com.br', '$2a$10$AtWo422MdyRQ1RgPzmJNnuDB7xN0GW38sXT4rnBFBqGnMyVmVEf4O', 'ROLE_CLIENT');
+    values (102, 'bob@email.com.br', '$2a$12$e6ueYpLCQCT9j7MXTVLfc.R.kWUi.UXkf26rRbAfLmxq9dqNkhQ3C', 'ROLE_CLIENT');
 
 insert into clients (id, name, cpf, user_id) values (21, 'Biatriz Rodrigues', '09191773016', 101);
 insert into clients (id, name, cpf, user_id) values (22, 'Rodrigo Silva', '98401203015', 102);
