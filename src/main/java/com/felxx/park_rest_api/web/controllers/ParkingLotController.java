@@ -1,12 +1,15 @@
 package com.felxx.park_rest_api.web.controllers;
 
+import java.io.IOException;
 import java.net.URI;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +26,8 @@ import com.felxx.park_rest_api.entities.ClientParkingSpace;
 import com.felxx.park_rest_api.jwt.JwtUserDetails;
 import com.felxx.park_rest_api.repositories.projection.ClientParkingSpaceProjection;
 import com.felxx.park_rest_api.services.ClientParkingSpaceService;
+import com.felxx.park_rest_api.services.ClientService;
+import com.felxx.park_rest_api.services.JasperService;
 import com.felxx.park_rest_api.services.ParkingLotService;
 import com.felxx.park_rest_api.web.dto.PageableDto;
 import com.felxx.park_rest_api.web.dto.ParkingLotCreateDto;
@@ -40,8 +45,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RequiredArgsConstructor
@@ -51,6 +59,8 @@ public class ParkingLotController {
 
         private final ParkingLotService parkingLotService;
         private final ClientParkingSpaceService clientParkingSpaceService;
+        private final ClientService clientService;
+        private final JasperService jasperService;
 
         @Operation(summary = "Check-in Operation", description = "Endpoint for checking a vehicle into the parking lot. "
                         +
@@ -148,5 +158,19 @@ public class ParkingLotController {
                 Page<ClientParkingSpaceProjection> projection = clientParkingSpaceService.findAllById(user.getId(), pageable);
                 PageableDto pageableDto = PageableMapper.toDto(projection);
                 return ResponseEntity.ok(pageableDto);
+        }
+
+        @GetMapping("/report")
+        @PreAuthorize("hasRole('CLIENT')")
+        public ResponseEntity<Void> getReport(HttpServletResponse response, @AuthenticationPrincipal JwtUserDetails user) throws IOException {
+                String cpf = clientService.findById(user.getId()).getCpf();
+                jasperService.addParams("CPF", cpf);
+                byte[] bytes = jasperService.generateReport();
+
+                response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=report.pdf");
+                response.getOutputStream().write(bytes);
+
+                return ResponseEntity.ok().build();
         }
 }
